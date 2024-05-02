@@ -28,6 +28,11 @@ func main() {
 		return
 	}
 
+	client.Identify.Intents = discordgo.IntentGuildMessages
+	client.Identify.Presence = discordgo.GatewayStatusUpdate{
+		Game: discordgo.Activity{Name: "Learning!", Type: discordgo.ActivityTypeGame},
+	}
+
 	defer waitUntilInterrupted()
 
 	log.Println("Session created")
