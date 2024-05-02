@@ -28,15 +28,18 @@ func main() {
 		return
 	}
 
+	// --> Handlers
+	client.AddHandler(messageReceiver)
+
+	// --> Intents
 	client.Identify.Intents = discordgo.IntentGuildMessages
 	client.Identify.Presence = discordgo.GatewayStatusUpdate{
 		Game: discordgo.Activity{Name: "Learning!", Type: discordgo.ActivityTypeGame},
 	}
 
-	defer waitUntilInterrupted()
-
 	log.Println("Session created")
 
+	// --> Open the connection, that means the bot will go online
 	error = client.Open()
 	if error != nil {
 		log.Fatalf("Error opening connection: %v\n", error)
@@ -44,4 +47,23 @@ func main() {
 	}
 
 	log.Println("Bot is online!")
+
+	// --> Maintein the bot online until interrupted
+	waitUntilInterrupted()
+
+	// --> Close the connection when interrupted
+	client.Close()
+	log.Println("ALERT: Connection ended.")
+}
+
+func messageReceiver(s *discordgo.Session, data *discordgo.MessageCreate) {
+	if data.Author.ID == s.State.User.ID {
+		return
+	}
+
+	_, error := s.ChannelMessageSendReply(data.Message.ChannelID, "Hello!", data.Reference())
+	if error != nil {
+		log.Panic(error)
+		return
+	}
 }
