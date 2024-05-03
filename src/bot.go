@@ -15,6 +15,8 @@ func waitUntilInterrupted() {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
+
+	log.Println("ALERT: Connection ended.")
 }
 
 func main() {
@@ -27,6 +29,11 @@ func main() {
 		log.Fatalf("Error creating discord session: %v\n", error)
 		return
 	}
+
+	// --> Maintein the bot online until interrupted
+	// --> Close the connection when interrupted
+	defer client.Close()
+	defer waitUntilInterrupted()
 
 	// --> Handlers
 	client.AddHandler(messageReceiver)
@@ -47,20 +54,12 @@ func main() {
 	}
 
 	log.Println("Bot is online!")
-
-	// --> Maintein the bot online until interrupted
-	waitUntilInterrupted()
-
-	// --> Close the connection when interrupted
-	client.Close()
-	log.Println("ALERT: Connection ended.")
 }
 
 func messageReceiver(s *discordgo.Session, data *discordgo.MessageCreate) {
 	if data.Author.ID == s.State.User.ID {
 		return
 	}
-
 	_, error := s.ChannelMessageSendReply(data.Message.ChannelID, "Hello!", data.Reference())
 	if error != nil {
 		log.Panic(error)
