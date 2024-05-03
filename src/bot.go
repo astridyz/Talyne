@@ -37,6 +37,7 @@ func main() {
 
 	// --> Handlers
 	client.AddHandler(messageReceiver)
+	client.AddHandler(commandReceiver)
 
 	// --> Intents
 	client.Identify.Intents = discordgo.IntentGuildMessages
@@ -53,7 +54,21 @@ func main() {
 		return
 	}
 
+	// --> Creating a command
+	command := &discordgo.ApplicationCommand{Name: "hello", Description: "Description"}
+	_, error = client.ApplicationCommandCreate(client.State.User.ID, "1235669274622820362", command)
+	if error != nil {
+		log.Panicf("Error creating bot command: %v\n", error)
+	}
+
 	log.Println("Bot is online!")
+}
+
+func commandReceiver(s *discordgo.Session, data *discordgo.InteractionCreate) {
+	s.InteractionRespond(data.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{Content: "Hiii, nice to meet you ^-^ !"},
+	})
 }
 
 func messageReceiver(s *discordgo.Session, data *discordgo.MessageCreate) {
