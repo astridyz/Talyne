@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/astridyz/talyne-discord-bot/commands"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -13,10 +14,8 @@ func initHandlers() {
 }
 
 func commandReceiver(s *discordgo.Session, data *discordgo.InteractionCreate) {
-	s.InteractionRespond(data.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{Content: "Hiii, nice to meet you ^-^ !"},
-	})
+	for _, AstridCommand := range commands.RegisteredCommands {
+	}
 }
 
 func messageReceiver(s *discordgo.Session, data *discordgo.MessageCreate) {

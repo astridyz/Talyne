@@ -23,14 +23,9 @@ func waitUntilInterrupted() {
 	log.Println("Connection ended.")
 }
 
-func remoteApplicationsCommands() {
-	// registeredCommands, error := client.ApplicationCommands(client.State.User.ID, "1235669274622820362")
-	// if error != nil {
-	//	log.Fatalf("Could not fetch registered commands: %v", error)
-	// }
-
-	for _, command := range commands.RegisteredCommands {
-		error := client.ApplicationCommandDelete(client.State.User.ID, "1235669274622820362", command.ID)
+func remoteRegisteredCommands() {
+	for _, AstridCommand := range commands.RegisteredCommands {
+		error := client.ApplicationCommandDelete(client.State.User.ID, "1235669274622820362", AstridCommand.Command.ID)
 		if error != nil {
 			log.Panicf("Error deleting command: %v\n", error)
 		}
@@ -53,7 +48,7 @@ func main() {
 	// --> Delete all registered commands *testing function*
 	// --> Close the connection when interrupted
 	defer client.Close()
-	defer remoteApplicationsCommands()
+	defer remoteRegisteredCommands()
 	defer waitUntilInterrupted()
 
 	// --> Intents
@@ -73,11 +68,13 @@ func main() {
 		return
 	}
 
-	for _, AstridCommand := range commands.GetAllCommands() {
+	for i, AstridCommand := range commands.GetAllCommands() {
 		_, error = client.ApplicationCommandCreate(client.State.User.ID, "1235669274622820362", AstridCommand.Command)
 		if error != nil {
 			log.Panicf("Error creating bot command: %v\n", error)
+			continue
 		}
+		commands.RegisteredCommands[i] = AstridCommand
 	}
 
 	log.Println("Bot is online!")

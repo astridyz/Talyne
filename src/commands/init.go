@@ -8,7 +8,7 @@ type AstridCommand struct {
 }
 
 var applicationCommands []*AstridCommand
-var RegisteredCommands = make([]*discordgo.ApplicationCommand, len(applicationCommands))
+var RegisteredCommands = make([]*AstridCommand, len(applicationCommands))
 
 func GetAllCommands() []*AstridCommand {
 	applicationCommands = []*AstridCommand{
