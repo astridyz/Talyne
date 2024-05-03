@@ -5,6 +5,8 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/astridyz/talyne-discord-bot/commands"
+
 	"log"
 
 	"github.com/bwmarrin/discordgo"
@@ -72,10 +74,17 @@ func main() {
 	}
 
 	// --> Creating a command
-	command := &discordgo.ApplicationCommand{Name: "hello", Description: "Description"}
-	_, error = client.ApplicationCommandCreate(client.State.User.ID, "1235669274622820362", command)
-	if error != nil {
-		log.Panicf("Error creating bot command: %v\n", error)
+	//_, error = client.ApplicationCommandCreate(client.State.User.ID, "1235669274622820362", commands.Hello_Command)
+	//if error != nil {
+	//	log.Panicf("Error creating bot command: %v\n", error)
+	//}
+
+	for _, AstridCommand := range commands.GetAllCommands() {
+		_, error = client.ApplicationCommandCreate(client.State.User.ID, "1235669274622820362", AstridCommand.Command)
+		if error != nil {
+			log.Panicf("Error creating bot command: %v\n", error)
+		}
 	}
+
 	log.Println("Bot is online!")
 }
