@@ -18,7 +18,21 @@ func waitUntilInterrupted() {
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
 
-	log.Println("ALERT: Connection ended.")
+	log.Println("Connection ended.")
+}
+
+func remoteApplicationsCommands() {
+	registeredCommands, error := client.ApplicationCommands(client.State.User.ID, "1235669274622820362")
+	if error != nil {
+		log.Fatalf("Could not fetch registered commands: %v", error)
+	}
+
+	for _, command := range registeredCommands {
+		error := client.ApplicationCommandDelete(client.State.User.ID, "1235669274622820362", command.ID)
+		if error != nil {
+			log.Panicf("Error deleting command: %v\n", error)
+		}
+	}
 }
 
 func main() {
@@ -34,8 +48,10 @@ func main() {
 	}
 
 	// --> Maintein the bot online until interrupted
+	// --> Delete all registered commands *testing function*
 	// --> Close the connection when interrupted
 	defer client.Close()
+	defer remoteApplicationsCommands()
 	defer waitUntilInterrupted()
 
 	// --> Intents
@@ -45,6 +61,8 @@ func main() {
 	}
 
 	log.Println("Session created")
+	// --> Starting all events
+	initHandlers()
 
 	// --> Open the connection, that means the bot will go online
 	error = client.Open()
@@ -59,7 +77,5 @@ func main() {
 	if error != nil {
 		log.Panicf("Error creating bot command: %v\n", error)
 	}
-
-	initHandlers()
 	log.Println("Bot is online!")
 }
