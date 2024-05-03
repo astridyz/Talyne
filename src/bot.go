@@ -24,12 +24,12 @@ func waitUntilInterrupted() {
 }
 
 func remoteApplicationsCommands() {
-	registeredCommands, error := client.ApplicationCommands(client.State.User.ID, "1235669274622820362")
-	if error != nil {
-		log.Fatalf("Could not fetch registered commands: %v", error)
-	}
+	// registeredCommands, error := client.ApplicationCommands(client.State.User.ID, "1235669274622820362")
+	// if error != nil {
+	//	log.Fatalf("Could not fetch registered commands: %v", error)
+	// }
 
-	for _, command := range registeredCommands {
+	for _, command := range commands.RegisteredCommands {
 		error := client.ApplicationCommandDelete(client.State.User.ID, "1235669274622820362", command.ID)
 		if error != nil {
 			log.Panicf("Error deleting command: %v\n", error)
@@ -72,12 +72,6 @@ func main() {
 		log.Fatalf("Error opening connection: %v\n", error)
 		return
 	}
-
-	// --> Creating a command
-	//_, error = client.ApplicationCommandCreate(client.State.User.ID, "1235669274622820362", commands.Hello_Command)
-	//if error != nil {
-	//	log.Panicf("Error creating bot command: %v\n", error)
-	//}
 
 	for _, AstridCommand := range commands.GetAllCommands() {
 		_, error = client.ApplicationCommandCreate(client.State.User.ID, "1235669274622820362", AstridCommand.Command)

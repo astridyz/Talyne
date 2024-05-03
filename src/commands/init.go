@@ -7,8 +7,11 @@ type AstridCommand struct {
 	Handler func(*discordgo.Session, *discordgo.InteractionCreate)
 }
 
+var applicationCommands []*AstridCommand
+var RegisteredCommands = make([]*discordgo.ApplicationCommand, len(applicationCommands))
+
 func GetAllCommands() []*AstridCommand {
-	applicationCommands := []*AstridCommand{
+	applicationCommands = []*AstridCommand{
 		Hello_Command,
 		Hi_Command,
 	}
