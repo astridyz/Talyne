@@ -11,6 +11,8 @@ import (
 	"github.com/joho/godotenv"
 )
 
+var client *discordgo.Session
+
 func waitUntilInterrupted() {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
@@ -24,7 +26,8 @@ func main() {
 	log.SetFlags(0)
 	godotenv.Load("../config.env")
 
-	client, error := discordgo.New("Bot " + os.Getenv("TOKEN"))
+	var error error
+	client, error = discordgo.New("Bot " + os.Getenv("TOKEN"))
 	if error != nil {
 		log.Fatalf("Error creating discord session: %v\n", error)
 		return
@@ -34,10 +37,6 @@ func main() {
 	// --> Close the connection when interrupted
 	defer client.Close()
 	defer waitUntilInterrupted()
-
-	// --> Handlers
-	client.AddHandler(messageReceiver)
-	client.AddHandler(commandReceiver)
 
 	// --> Intents
 	client.Identify.Intents = discordgo.IntentGuildMessages
@@ -61,23 +60,6 @@ func main() {
 		log.Panicf("Error creating bot command: %v\n", error)
 	}
 
+	initHandlers()
 	log.Println("Bot is online!")
-}
-
-func commandReceiver(s *discordgo.Session, data *discordgo.InteractionCreate) {
-	s.InteractionRespond(data.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{Content: "Hiii, nice to meet you ^-^ !"},
-	})
-}
-
-func messageReceiver(s *discordgo.Session, data *discordgo.MessageCreate) {
-	if data.Author.ID == s.State.User.ID {
-		return
-	}
-	_, error := s.ChannelMessageSendReply(data.Message.ChannelID, "Hello!", data.Reference())
-	if error != nil {
-		log.Panic(error)
-		return
-	}
 }
