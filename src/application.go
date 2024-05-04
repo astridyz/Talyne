@@ -18,6 +18,8 @@ func removeRegisteredCommands() {
 			log.Panicf("Error deleting command: %v\n", error)
 		}
 	}
+
+	log.Println("Commands deleted")
 }
 
 func createApplicationCommands() {
@@ -30,4 +32,6 @@ func createApplicationCommands() {
 
 		commands.RegisteredCommands[i] = AstridCommand
 	}
+
+	log.Println("Commands added")
 }

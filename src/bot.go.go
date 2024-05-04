@@ -31,7 +31,7 @@ func main() {
 
 	log.Println("Session created")
 
-	// --> When closing the bot
+	// --> Closing the bot
 	defer client.Close()
 	defer removeRegisteredCommands()
 	defer waitUntilInterrupted()
