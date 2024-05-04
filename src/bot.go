@@ -15,6 +15,8 @@ import (
 
 var client *discordgo.Session
 
+const TESTING_GUILD_ID string = "1235669274622820362"
+
 func waitUntilInterrupted() {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
@@ -23,9 +25,14 @@ func waitUntilInterrupted() {
 	log.Println("Connection ended.")
 }
 
-func remoteRegisteredCommands() {
-	for _, AstridCommand := range commands.RegisteredCommands {
-		error := client.ApplicationCommandDelete(client.State.User.ID, "1235669274622820362", AstridCommand.Command.ID)
+func removeRegisteredCommands() {
+	registeredCommands, error := client.ApplicationCommands(client.State.User.ID, TESTING_GUILD_ID)
+	if error != nil {
+		log.Panicf("Error getting application commands: %v\n", error)
+	}
+
+	for _, ApplicationCommand := range registeredCommands {
+		error := client.ApplicationCommandDelete(client.State.User.ID, TESTING_GUILD_ID, ApplicationCommand.ID)
 		if error != nil {
 			log.Panicf("Error deleting command: %v\n", error)
 		}
@@ -48,7 +55,7 @@ func main() {
 	// --> Delete all registered commands *testing function*
 	// --> Close the connection when interrupted
 	defer client.Close()
-	defer remoteRegisteredCommands()
+	defer removeRegisteredCommands()
 	defer waitUntilInterrupted()
 
 	// --> Intents
@@ -58,8 +65,9 @@ func main() {
 	}
 
 	log.Println("Session created")
-	// --> Starting all events
+	// --> Starting all events and commands
 	initHandlers()
+	commands.Init()
 
 	// --> Open the connection, that means the bot will go online
 	error = client.Open()
@@ -68,12 +76,14 @@ func main() {
 		return
 	}
 
-	for i, AstridCommand := range commands.GetAllCommands() {
-		_, error = client.ApplicationCommandCreate(client.State.User.ID, "1235669274622820362", AstridCommand.Command)
+	// --> Creating all slash commands
+	for i, AstridCommand := range commands.ApplicationCommands {
+		_, error = client.ApplicationCommandCreate(client.State.User.ID, TESTING_GUILD_ID, AstridCommand.Command)
 		if error != nil {
 			log.Panicf("Error creating bot command: %v\n", error)
 			continue
 		}
+
 		commands.RegisteredCommands[i] = AstridCommand
 	}
 
