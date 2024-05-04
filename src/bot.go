@@ -26,12 +26,12 @@ func waitUntilInterrupted() {
 }
 
 func removeRegisteredCommands() {
-	registeredCommands, error := client.ApplicationCommands(client.State.User.ID, TESTING_GUILD_ID)
+	ApplicationCommands, error := client.ApplicationCommands(client.State.User.ID, TESTING_GUILD_ID)
 	if error != nil {
 		log.Panicf("Error getting application commands: %v\n", error)
 	}
 
-	for _, ApplicationCommand := range registeredCommands {
+	for _, ApplicationCommand := range ApplicationCommands {
 		error := client.ApplicationCommandDelete(client.State.User.ID, TESTING_GUILD_ID, ApplicationCommand.ID)
 		if error != nil {
 			log.Panicf("Error deleting command: %v\n", error)
@@ -51,6 +51,8 @@ func main() {
 		return
 	}
 
+	log.Println("Session created")
+
 	// --> Maintein the bot online until interrupted
 	// --> Delete all registered commands *testing function*
 	// --> Close the connection when interrupted
@@ -64,10 +66,8 @@ func main() {
 		Game: discordgo.Activity{Name: "Learning!", Type: discordgo.ActivityTypeGame},
 	}
 
-	log.Println("Session created")
-	// --> Starting all events and commands
+	// --> Starting handlers
 	initHandlers()
-	commands.Init()
 
 	// --> Open the connection, that means the bot will go online
 	error = client.Open()
