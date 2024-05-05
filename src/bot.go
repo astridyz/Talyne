@@ -15,7 +15,7 @@ import (
 
 var client *discordgo.Session
 
-const TESTING_GUILD_ID string = "1235669274622820362"
+const TESTING_GUILD_ID = "1235669274622820362"
 
 func main() {
 
