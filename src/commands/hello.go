@@ -23,21 +23,22 @@ var Hello_Command = &AstridCommand{
 func helloMessageReceiver(s *discordgo.Session, data *discordgo.InteractionCreate) {
 
 	options := data.ApplicationCommandData().Options
+	/*
+		optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
 
-	optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(options))
+			for _, opt := range options {
+				optionMap[opt.Name] = opt
+			}
 
-	for _, opt := range options {
-		optionMap[opt.Name] = opt
-	}
+			var user *discordgo.User
 
-	var user *discordgo.User
-
-	if option, ok := optionMap["person"]; ok {
-		user = option.UserValue(s)
-	}
+			if option, ok := optionMap["person"]; ok {
+				user = option.UserValue(s)
+			}
+	*/
 
 	s.InteractionRespond(data.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{Content: "Hello, nice to meet you, " + user.Mention() + "!"},
+		Data: &discordgo.InteractionResponseData{Content: "Hello, nice to meet you, " + options[0].UserValue(s).Mention() + "!"},
 	})
 }
