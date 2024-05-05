@@ -15,7 +15,7 @@ func removeRegisteredCommands() {
 	for _, ApplicationCommand := range ApplicationCommands {
 		error := client.ApplicationCommandDelete(client.State.User.ID, TESTING_GUILD_ID, ApplicationCommand.ID)
 		if error != nil {
-			log.Panicf("Error deleting command: %v\n", error)''
+			log.Panicf("Error deleting command: %v\n", error)
 		}
 	}
 
