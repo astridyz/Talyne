@@ -1,6 +1,8 @@
 package commands
 
 import (
+	"fmt"
+
 	"github.com/bwmarrin/discordgo"
 
 	"github.com/astridyz/talyne-discord-bot/utils"
@@ -25,18 +27,13 @@ var Hello_Command = &AstridCommand{
 func helloMessageReceiver(s *discordgo.Session, data *discordgo.InteractionCreate) {
 
 	Options := data.ApplicationCommandData().Options
+	var Interaction = utils.AstridInteraction{Client: s, Data: data}
 
 	if Options == nil || Options[0] == nil {
-		s.InteractionRespond(data.Interaction, &discordgo.InteractionResponse{
-			Type: discordgo.InteractionResponseChannelMessageWithSource,
-			Data: &discordgo.InteractionResponseData{Embeds: []*discordgo.MessageEmbed{utils.CreateErrorEmbed("No users have been sent.")}},
-		})
-
+		Interaction.SendEphemeralEmbed((utils.CreateErrorEmbed("No user have been sent.")))
 		return
 	}
 
-	s.InteractionRespond(data.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{Content: "Hello, nice to meet you, " + Options[0].UserValue(s).Mention() + "!"},
-	})
+	Interaction.SendEphemeralMessage("Message sent!")
+	s.ChannelMessageSend(data.ChannelID, fmt.Sprintf("Hello, nice to meet you, %v!", Options[0].UserValue(s).Mention()))
 }

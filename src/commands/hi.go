@@ -1,6 +1,9 @@
 package commands
 
-import "github.com/bwmarrin/discordgo"
+import (
+	"github.com/astridyz/talyne-discord-bot/utils"
+	"github.com/bwmarrin/discordgo"
+)
 
 var Hi_Command = &AstridCommand{
 	Command: &discordgo.ApplicationCommand{Name: "hi", Description: "Description"},
@@ -8,8 +11,6 @@ var Hi_Command = &AstridCommand{
 }
 
 func hiMessageReceiver(s *discordgo.Session, data *discordgo.InteractionCreate) {
-	s.InteractionRespond(data.Interaction, &discordgo.InteractionResponse{
-		Type: discordgo.InteractionResponseChannelMessageWithSource,
-		Data: &discordgo.InteractionResponseData{Content: "Hi there! c:"},
-	})
+	var Interaction = utils.AstridInteraction{Client: s, Data: data}
+	Interaction.SendMessage("Hii!! Are you okay?")
 }
