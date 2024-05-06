@@ -37,13 +37,14 @@ func main() {
 	defer waitUntilInterrupted()
 
 	// --> Intents
-	client.Identify.Intents = discordgo.IntentGuildMessages
+	client.Identify.Intents = discordgo.IntentGuildMessages | discordgo.IntentGuildMembers
 	client.Identify.Presence = discordgo.GatewayStatusUpdate{
 		Game: discordgo.Activity{Name: "Learning!", Type: discordgo.ActivityTypeGame},
 	}
 
 	// --> Starting handlers
 	client.AddHandler(handlers.CommandHandler)
+	client.AddHandler(handlers.WelcomeHandler)
 
 	// --> Open the connection, that means the bot will go online
 	error = client.Open()
