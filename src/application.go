@@ -1,8 +1,6 @@
 package main
 
 import (
-	"log"
-
 	"github.com/astridyz/talyne-discord-bot/commands"
 )
 
@@ -19,7 +17,7 @@ func removeRegisteredCommands() {
 		}
 	}
 
-	log.Println("Commands deleted")
+	log.Warn("Commands deleted")
 }
 
 func createApplicationCommands() {
@@ -33,5 +31,5 @@ func createApplicationCommands() {
 		commands.RegisteredCommands[i] = AstridCommand
 	}
 
-	log.Println("Commands added")
+	log.Print("Commands added")
 }

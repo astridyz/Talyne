@@ -7,7 +7,8 @@ import (
 
 	"github.com/astridyz/talyne-discord-bot/handlers"
 
-	"log"
+	aura "github.com/astridyz/Aura/src"
+	"github.com/astridyz/Aura/src/colors"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
@@ -15,11 +16,15 @@ import (
 
 var client *discordgo.Session
 
+var log = aura.NewLogger(&aura.Prefix{
+	Structure: "Astrid:",
+	Color:     colors.BrightPink,
+})
+
 const TESTING_GUILD_ID = "1235669274622820362"
 
 func main() {
 
-	log.SetFlags(0)
 	godotenv.Load("../config.env")
 
 	var error error
@@ -28,8 +33,6 @@ func main() {
 		log.Fatalf("Error creating discord session: %v\n", error)
 		return
 	}
-
-	log.Println("Session created")
 
 	// --> Closing the bot
 	defer client.Close()
@@ -56,7 +59,7 @@ func main() {
 	// --> Creating all slash commands
 	createApplicationCommands()
 
-	log.Println("Bot is online!")
+	log.Print("Bot is online!")
 }
 
 func waitUntilInterrupted() {
@@ -64,5 +67,5 @@ func waitUntilInterrupted() {
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
 
-	log.Println("Connection ended.")
+	log.Warn("Connection ended.")
 }

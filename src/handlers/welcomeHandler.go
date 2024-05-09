@@ -2,7 +2,8 @@ package handlers
 
 import (
 	"fmt"
-	"log"
+
+	aura "github.com/astridyz/Aura/src"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -20,6 +21,6 @@ func WelcomeHandler(s *discordgo.Session, data *discordgo.GuildMemberAdd) {
 
 	_, error := s.ChannelMessageSend(WelcomeChannel, fmt.Sprintf("Welcome to Astrid's Land, %v!", data.Member.User.Mention()))
 	if error != nil {
-		log.Panicf("Error on sending message: %v", error)
+		aura.Panicf("Error on sending message: %v", error)
 	}
 }
