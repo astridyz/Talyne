@@ -32,24 +32,35 @@ func (a *Interaction) sendResponse(data *response) error {
 
 // --> Embeds
 
-func (a *Interaction) SendEmbed(embed *discordgo.MessageEmbed, ephemeral bool) error {
+func (a *Interaction) SendEmbed(embed *discordgo.MessageEmbed) error {
 	data := &response{
 		Embeds: []*discordgo.MessageEmbed{embed},
 	}
-	if ephemeral {
-		data.Flags = 1 << 6
+	return a.sendResponse(data)
+}
+
+func (a *Interaction) SendEphemeralEmbed(embed *discordgo.MessageEmbed) error {
+	data := &response{
+		Embeds: []*discordgo.MessageEmbed{embed},
+		Flags:  1 << 6,
 	}
+
 	return a.sendResponse(data)
 }
 
 // --> Messages
 
-func (a *Interaction) SendMessage(message string, ephemeral bool) error {
+func (a *Interaction) SendMessage(message string) error {
 	data := &response{
 		Message: message,
 	}
-	if ephemeral {
-		data.Flags = 1 << 6
+	return a.sendResponse(data)
+}
+
+func (a *Interaction) SendEphemeralMessage(message string) error {
+	data := &response{
+		Message: message,
+		Flags:   1 << 6,
 	}
 	return a.sendResponse(data)
 }

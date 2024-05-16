@@ -30,7 +30,7 @@ func helloMessageReceiver(s *discordgo.Session, data *discordgo.InteractionCreat
 	var Interaction = utils.Interaction{Client: s, Data: data}
 
 	if Options == nil || Options[0] == nil {
-		Interaction.SendEmbed(utils.CreateErrorEmbed("No user have been sent."), true)
+		Interaction.SendEmbed(utils.CreateErrorEmbed("No user have been sent."))
 		return
 	}
 

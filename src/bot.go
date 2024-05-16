@@ -8,7 +8,6 @@ import (
 	"github.com/astridyz/talyne-discord-bot/handlers"
 
 	aura "github.com/astridyz/Aura/src"
-	"github.com/astridyz/Aura/src/colors"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
@@ -16,9 +15,9 @@ import (
 
 var client *discordgo.Session
 
-var log = aura.NewLogger(&aura.Prefix{
-	Structure: "Astrid:",
-	Color:     colors.BrightPink,
+var log = aura.New(&aura.Prefix{
+	Body:  "Astrid:",
+	Level: aura.Debug,
 })
 
 const TESTING_GUILD_ID = "1235669274622820362"

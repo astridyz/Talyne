@@ -12,5 +12,5 @@ var Hi_Command = &Command{
 
 func hiMessageReceiver(s *discordgo.Session, data *discordgo.InteractionCreate) {
 	var Interaction = utils.Interaction{Client: s, Data: data}
-	Interaction.SendMessage("Hii!! Are you okay?", false)
+	Interaction.SendEphemeralMessage("Ephemeral message")
 }
